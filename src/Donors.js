@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './css/Donors.css';  // Donors CSS
+import './css/Donors.css';
 
 const Donors = () => {
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');  // State for search query
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState('donation');
 
   useEffect(() => {
-    // Fetch donors data from backend API
     axios
       .get('http://localhost:4500/api/donors')
       .then((response) => {
@@ -26,9 +26,12 @@ const Donors = () => {
     setSearchQuery(e.target.value);
   };
 
-  // Filter donors by the donation field
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
+  };
+
   const filteredDonors = donors.filter((donor) =>
-    donor.donation.toLowerCase().includes(searchQuery.toLowerCase())
+    donor[searchType]?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
@@ -43,15 +46,22 @@ const Donors = () => {
     <div className="donors-container">
       <h1 className="heading">Donors</h1>
 
-      {/* Search Bar for Donation */}
       <div className="search-container">
         <input
           type="text"
-          placeholder="Search by donation (e.g., Blood Group, Organ)"
+          placeholder={`Search by ${searchType}`}
           className="search-input"
           value={searchQuery}
           onChange={handleSearch}
         />
+        <select
+          className="search-type-select"
+          value={searchType}
+          onChange={handleSearchTypeChange}
+        >
+          <option value="username">Username</option>
+          <option value="donation">Donation</option>
+        </select>
       </div>
 
       <div className="donors-list">

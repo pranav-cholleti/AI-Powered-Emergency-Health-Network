@@ -7,6 +7,7 @@ const DonorList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState('donation');
 
   useEffect(() => {
     axios
@@ -35,8 +36,14 @@ const DonorList = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleSearchTypeChange = (e) => {
+    setSearchType(e.target.value);
+  };
+
   const filteredDonors = donors.filter((donor) =>
-    donor.donation.toLowerCase().includes(searchQuery.toLowerCase())
+    searchType === 'username'
+      ? donor.username.toLowerCase().includes(searchQuery.toLowerCase())
+      : donor.donation.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -48,11 +55,19 @@ const DonorList = () => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Search by donation (e.g., Blood Group, Organ)"
+          placeholder={`Search by ${searchType}`}
           className="search-input"
           value={searchQuery}
           onChange={handleSearch}
         />
+        <select
+          className="search-type-select"
+          value={searchType}
+          onChange={handleSearchTypeChange}
+        >
+          <option value="username">Username</option>
+          <option value="donation">Donation</option>
+        </select>
       </div>
       <div className="donors-list">
         {filteredDonors.length > 0 ? (
