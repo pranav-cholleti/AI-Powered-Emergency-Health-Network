@@ -30,6 +30,7 @@ const Nav = ({ username, role }) => {
               <li>
                 {role === 'admin' ? (<>
                     <Link to="/contactlist" className="nav-navbar-link">Queries</Link>
+                    <Link to="/donorlist" className="nav-navbar-link">Donors</Link>
                   </>
                 ) : (
                   role === 'patient' ?(<li><Link to="/patientprofile" className="nav-navbar-link">Profile</Link></li>)

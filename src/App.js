@@ -8,6 +8,7 @@ import Donors from './Donors';
 import DonorForm from './DonorForm';
 import Contact from './Contact';
 import ContactList from './ContactList';
+import DonorList from './DonorList';
 import HospitalProfile from './HospitalProfile';
 import PatientProfile from './PatientProfile';
 import Footer from './Footer';
@@ -119,13 +120,29 @@ const App = () => {
             path="/contactlist"
             element={
               role !== 'admin' ? (
-                <Link to="/" />  // Redirect to the homepage or another path if not admin
+                <Link to="/" />  
               ) : !username || username === 'guest' ? (
                 <Login onLoginSuccess={handleLoginSuccess} />
               ) : (
                 <div>
                   <Nav username={username} role={role} onLogout={handleLogout} />
                   <ContactList />
+                  <Footer />
+                </div>
+              )
+            }
+          />
+          <Route
+            path="/donorlist"
+            element={
+              role !== 'admin' ? (
+                <Link to="/" />  
+              ) : !username || username === 'guest' ? (
+                <Login onLoginSuccess={handleLoginSuccess} />
+              ) : (
+                <div>
+                  <Nav username={username} role={role} onLogout={handleLogout} />
+                  <DonorList />
                   <Footer />
                 </div>
               )
