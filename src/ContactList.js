@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './css/ContactList.css';  // Import the updated CSS file
+import './css/ContactList.css';  
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);
@@ -41,15 +41,17 @@ const ContactList = () => {
         <p className="no-queries-found">No contacts found.</p>
       ) : (
         <ul className="query-list">
-          {contacts.map((contact, index) => (
-            <li key={index} className="query-item">
-              <h3 className="query-username">{contact.username}</h3>
-              <p className="query-description">{contact.description}</p>
-              <p className="query-time">
-                <strong>Created At:</strong> {contact.createdAt}
-              </p>
-            </li>
-          ))}
+          {contacts
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sorting by most recent date
+            .map((contact, index) => (
+              <li key={index} className="query-item">
+                <h3 className="query-username">{contact.username}</h3>
+                <p className="query-description">{contact.description}</p>
+                <p className="query-time">
+                  <strong>Created At:</strong> {contact.createdAt}
+                </p>
+              </li>
+            ))}
         </ul>
       )}
     </div>

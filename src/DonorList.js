@@ -7,7 +7,7 @@ const DonorList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState('donation');
+  const [searchType, setSearchType] = useState('username');
 
   useEffect(() => {
     axios

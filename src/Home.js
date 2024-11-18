@@ -67,7 +67,7 @@ const Home = () => {
         <h2>Contact Us</h2>
         <p>Have any questions? We're here to help you with all your medical needs.</p>
         <Link to="/contact">
-          <button className="contact-btn">Reach Out</button>
+          <button className="contact-btnn">Reach Out</button>
         </Link>
       </section>
     </div>

@@ -6,6 +6,7 @@ const HospitalProfile = ({ username }) => {
   const [hospital, setHospital] = useState(null);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
+    location: '',
     description: '',
     tests_available: '',
     specialties: '',
@@ -18,6 +19,7 @@ const HospitalProfile = ({ username }) => {
         const response = await axios.get(`http://localhost:5004/api/hospital/${username}`);
         setHospital(response.data);
         setFormData({
+          location: response.data.location || '',
           description: response.data.description || '',
           tests_available: response.data.tests_available || '',
           specialties: response.data.specialties || '',
@@ -45,6 +47,7 @@ const HospitalProfile = ({ username }) => {
     try {
       const updatedData = {
         username,
+        location: formData.location,
         description: formData.description,
         tests_available: formData.tests_available,
         specialties: formData.specialties,
@@ -82,6 +85,16 @@ const HospitalProfile = ({ username }) => {
 
       <h2 className="update-title">Update Hospital Profile</h2>
       <form className="hospital-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Location:</label>
+          <input
+            className="input-field"
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+          />
+        </div>
         <div className="form-group">
           <label>Description:</label>
           <textarea

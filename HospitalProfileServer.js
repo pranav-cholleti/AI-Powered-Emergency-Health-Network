@@ -13,10 +13,7 @@ const dbName = 'MedReady';  // Database name
 let db;
 let hospitalCollection;
 
-// Enable CORS for all routes (important for cross-origin requests from React)
 app.use(cors());
-
-// Middleware to parse JSON requests
 app.use(bodyParser.json());
 
 // Connect to MongoDB
@@ -28,7 +25,7 @@ MongoClient.connect(url)
   })
   .catch(error => {
     console.error('MongoDB connection error:', error);
-    process.exit(1);  // Exit the process if DB connection fails
+    process.exit(1);
   });
 
 // Fetch hospital data by username
@@ -41,7 +38,6 @@ app.get('/api/hospital/:username', async (req, res) => {
       return res.status(404).json({ message: 'Hospital not found' });
     }
 
-    // Return the hospital data
     res.json(hospital);
   } catch (error) {
     console.error('Error fetching hospital:', error);
@@ -52,10 +48,8 @@ app.get('/api/hospital/:username', async (req, res) => {
 // Fetch all hospitals data
 app.get('/api/hospitals', async (req, res) => {
   try {
-    // Fetch all hospitals from the 'Hospitals' collection
     const hospitals = await hospitalCollection.find().toArray();
 
-    // Extract relevant fields: username, location, description, tests_available, specialties, and facilities
     const hospitalData = hospitals.map(hospital => ({
       username: hospital.username,
       location: hospital.location || 'No Location',
@@ -65,7 +59,7 @@ app.get('/api/hospitals', async (req, res) => {
       facilities: Array.isArray(hospital.facilities) ? hospital.facilities : [hospital.facilities || 'No facilities available'],
     }));
 
-    res.json(hospitalData);  // Send the filtered data as JSON response
+    res.json(hospitalData);
   } catch (error) {
     console.error('Error fetching hospitals:', error);
     return res.status(500).json({ message: 'Error fetching hospitals data' });
@@ -76,14 +70,15 @@ app.get('/api/hospitals', async (req, res) => {
 app.put('/api/hospital/:username', async (req, res) => {
   try {
     const { username } = req.params;
-    const { description, tests_available, specialties, facilities } = req.body;
+    const { location, description, tests_available, specialties, facilities } = req.body;
 
     // Validate the received data
-    if (!description || !tests_available || !specialties || !facilities) {
+    if (!location || !description || !tests_available || !specialties || !facilities) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     const updatedData = {
+      location,
       description,
       tests_available,
       specialties,
@@ -100,7 +95,6 @@ app.put('/api/hospital/:username', async (req, res) => {
       return res.status(404).json({ message: 'Hospital not found or no changes made' });
     }
 
-    // Fetch and return the updated hospital data
     const updatedHospital = await hospitalCollection.findOne({ username });
     res.json(updatedHospital);
   } catch (error) {
@@ -109,7 +103,7 @@ app.put('/api/hospital/:username', async (req, res) => {
   }
 });
 
-// Route to serve static files (if needed for hospital details page)
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Start the server

@@ -15,9 +15,8 @@ import Footer from './Footer';
 
 const App = () => {
   const [username, setUsername] = useState('');
-  const [role, setRole] = useState(''); // State for role
+  const [role, setRole] = useState(''); 
 
-  // Load username and role from localStorage on app load
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedRole = localStorage.getItem('role');
@@ -30,15 +29,13 @@ const App = () => {
     }
   }, []);
 
-  // Handle successful login by passing username and role to App component
   const handleLoginSuccess = (username, role) => {
     setUsername(username);
     setRole(role);
     localStorage.setItem('username', username);
-    localStorage.setItem('role', role); // Save role to localStorage
+    localStorage.setItem('role', role); 
   };
 
-  // Handle logout and remove username and role from localStorage
   const handleLogout = () => {
     setUsername('guest');
     setRole('guest');
@@ -55,7 +52,6 @@ const App = () => {
             element={<Login onLoginSuccess={handleLoginSuccess} />}
           />
 
-          {/* Hospitals Route */}
           <Route
             path="/hospitals"
             element={
