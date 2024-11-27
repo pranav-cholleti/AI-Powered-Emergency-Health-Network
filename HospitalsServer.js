@@ -12,6 +12,7 @@ const dbName = 'MedReady';  // Database name
 
 let db;
 let hospitalCollection;
+let patientCollection;
 
 // Enable CORS for all routes (important for cross-origin requests from React)
 app.use(cors());
@@ -24,6 +25,7 @@ MongoClient.connect(url)
   .then(client => {
     db = client.db(dbName);
     hospitalCollection = db.collection('Hospitals');
+    patientCollection = db.collection('Patients');
     console.log('Connected to MongoDB');
   })
   .catch(error => {
@@ -32,15 +34,14 @@ MongoClient.connect(url)
   });
 
 // Fetch hospitals data
-// Fetch hospitals data with description
-// Fetch hospitals data with detailed description, tests_available, specialties, and facilities
+// Fetch hospitals data (all hospitals should be displayed)
+// Fetch all hospitals (all hospitals should be displayed)
 app.get('/api/hospitals', async (req, res) => {
   try {
-    // Fetch all hospitals from the 'Hospitals' collection
-    const hospitals = await hospitalCollection.find().toArray();
+    // Fetch all hospitals without filtering by location
+    const allHospitals = await hospitalCollection.find({}).toArray();
 
-    // Extract relevant fields: username, location, description, tests_available, specialties, and facilities
-    const hospitalData = hospitals.map(hospital => ({
+    const allHospitalData = allHospitals.map(hospital => ({
       username: hospital.username,
       location: hospital.location || 'No Location',
       description: hospital.description || 'No Description Available',
@@ -48,16 +49,59 @@ app.get('/api/hospitals', async (req, res) => {
       specialties: Array.isArray(hospital.specialties) ? hospital.specialties : [hospital.specialties || 'No specialties available'],
       facilities: Array.isArray(hospital.facilities) ? hospital.facilities : [hospital.facilities || 'No facilities available'],
     }));
-    
-    res.json(hospitalData);  // Send the filtered data as JSON response
+
+    res.json(allHospitalData); // Send the full list of hospitals as a JSON response
   } catch (error) {
-    console.error('Error fetching hospitals:', error);
+    console.error('Error fetching all hospitals:', error);
     return res.status(500).json({ message: 'Error fetching hospitals data' });
   }
 });
 
-// Route to serve static files (e.g., for hospital detail pages if needed)
-app.use(express.static(path.join(__dirname, 'public')));
+// Fetch recommended hospitals based on role and username
+app.get('/api/recommended-hospitals', async (req, res) => {try {
+  const { role, username } = req.query; // Get role and username from query params
+  let filter = {};
+  let location = '';
+
+  // Check if the role is 'patient'
+  if (role === 'patient') {
+    const patient = await db.collection('Patients').findOne({ username });
+    if (patient) {
+      location = patient.report?.address || '';
+    }
+  }
+
+  // Check if the role is 'hospital'
+  if (role === 'hospital') {
+    const hospital = await hospitalCollection.findOne({ username });
+    if (hospital) {
+      location = hospital.location || '';
+    }
+  }
+
+  // Now filter hospitals based on location if it exists
+  if (location) {
+    filter.location = { $regex: location, $options: 'i' }; // case-insensitive partial match
+  }
+
+  // Fetch hospitals based on location filter
+  const hospitals = await hospitalCollection.find(filter).toArray();
+
+  const hospitalData = hospitals.map(hospital => ({
+    username: hospital.username,
+    location: hospital.location || 'No Location',
+    description: hospital.description || 'No Description Available',
+    tests_available: hospital.tests_available || ['No tests available'],
+    specialties: Array.isArray(hospital.specialties) ? hospital.specialties : [hospital.specialties || 'No specialties available'],
+    facilities: Array.isArray(hospital.facilities) ? hospital.facilities : [hospital.facilities || 'No facilities available'],
+  }));
+
+  res.json(hospitalData);  // Send the filtered data as JSON response
+} catch (error) {
+  console.error('Error fetching hospitals:', error);
+  return res.status(500).json({ message: 'Error fetching hospitals data' });
+}
+});
 
 // Start the server
 app.listen(port, () => {

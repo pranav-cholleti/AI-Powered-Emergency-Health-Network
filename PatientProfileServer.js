@@ -39,8 +39,10 @@ app.get('/api/patient/:username', async (req, res) => {
       return res.status(404).json({ message: 'Patient not found' });
     }
 
-    // Return the patient data
-    res.json(patient);
+    res.json({
+      report: patient.report || {},
+      donation: patient.donation || '',
+    });
   } catch (error) {
     console.error('Error fetching patient:', error);
     res.status(500).json({ message: 'Error fetching patient data' });
@@ -51,15 +53,15 @@ app.get('/api/patient/:username', async (req, res) => {
 app.put('/api/patient/:username', async (req, res) => {
   try {
     const { username } = req.params;
-    const { report } = req.body;
+    const { report, donation } = req.body;
 
-    // Validate the input data
-    if (!report) {
-      return res.status(400).json({ message: 'Report data is required' });
+    if (!report && donation === undefined) {
+      return res.status(400).json({ message: 'At least one of report or donation data is required' });
     }
 
-    const updateFields = {
-      report: {
+    const updateFields = {};
+    if (report) {
+      updateFields.report = {
         blood_group: report.blood_group,
         weight: report.weight,
         age: report.age,
@@ -67,8 +69,12 @@ app.put('/api/patient/:username', async (req, res) => {
         phone: report.phone,
         email: report.email,
         medical_conditions: report.medical_conditions,
-      },
-    };
+      };
+    }
+
+    if (donation !== undefined) {
+      updateFields.donation = donation;
+    }
 
     const result = await patientsCollection.updateOne(
       { username },
@@ -79,12 +85,31 @@ app.put('/api/patient/:username', async (req, res) => {
       return res.status(404).json({ message: 'Patient not found or no changes made' });
     }
 
-    // Fetch and return the updated patient data
-    const updatedPatient = await patientsCollection.findOne({ username });
-    res.json(updatedPatient);
+    res.json(await patientsCollection.findOne({ username }));
   } catch (error) {
     console.error('Error updating patient data:', error);
     res.status(500).json({ message: 'Error updating patient data' });
+  }
+});
+
+// Remove the donation status
+app.delete('/api/patient/:username/donation', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const result = await patientsCollection.updateOne(
+      { username },
+      { $unset: { donation: '' } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'Patient not found or no changes made' });
+    }
+
+    res.json({ message: 'Donation status removed successfully' });
+  } catch (error) {
+    console.error('Error removing donation status:', error);
+    res.status(500).json({ message: 'Error removing donation status' });
   }
 });
 

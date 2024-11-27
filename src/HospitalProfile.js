@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './css/HospitalProfile.css';
+import './css/HospitalProfile.css'; // Assuming you have the CSS file in the same directory
 
 const HospitalProfile = ({ username }) => {
   const [hospital, setHospital] = useState(null);
@@ -10,7 +10,9 @@ const HospitalProfile = ({ username }) => {
     description: '',
     tests_available: '',
     specialties: '',
-    facilities: ''
+    facilities: '',
+    email: '',
+    donation: '' // Adding donation field
   });
 
   useEffect(() => {
@@ -23,7 +25,9 @@ const HospitalProfile = ({ username }) => {
           description: response.data.description || '',
           tests_available: response.data.tests_available || '',
           specialties: response.data.specialties || '',
-          facilities: response.data.facilities || ''
+          facilities: response.data.facilities || '',
+          email: response.data.email || '',
+          donation: response.data.donation || '' // Setting the donation field value
         });
       } catch (err) {
         setError('Error fetching data');
@@ -38,7 +42,7 @@ const HospitalProfile = ({ username }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -51,7 +55,9 @@ const HospitalProfile = ({ username }) => {
         description: formData.description,
         tests_available: formData.tests_available,
         specialties: formData.specialties,
-        facilities: formData.facilities
+        facilities: formData.facilities,
+        email: formData.email,
+        donation: formData.donation // Including donation in the updated data
       };
 
       const response = await axios.put(`http://localhost:5004/api/hospital/${username}`, updatedData);
@@ -64,77 +70,134 @@ const HospitalProfile = ({ username }) => {
     }
   };
 
+  const handleDonationDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5004/api/hospital/${username}/donation`);
+      alert('Donation removed successfully!');
+      setHospital({ ...hospital, donation: undefined });
+      setFormData({ ...formData, donation: '' }); // Reset donation field
+    } catch (err) {
+      console.error('Error deleting donation:', err);
+      alert('Failed to remove donation');
+    }
+  };
+
   if (error) {
-    return <div className="hospital-profile error">{error}</div>;
+    return <div className="hospital-profile-error">{error}</div>;
   }
 
   if (!hospital) {
-    return <div className="hospital-profile">Loading...</div>;
+    return <div className="hospital-profile-loading">Loading...</div>;
   }
 
   return (
-    <div className="hospital-profile">
-      <h1 className="hospital-title">{hospital.username}</h1>
-      <div className="hospital-details">
-        <div className="detail-item"><strong>Location:</strong> <span>{hospital.location || "No Data"}</span></div>
-        <div className="detail-item"><strong>Description:</strong> <span>{hospital.description || "No Data"}</span></div>
-        <div className="detail-item"><strong>Tests Available:</strong> <span>{hospital.tests_available || "No Data"}</span></div>
-        <div className="detail-item"><strong>Specialties:</strong> <span>{hospital.specialties || "No Data"}</span></div>
-        <div className="detail-item"><strong>Facilities:</strong> <span>{hospital.facilities || "No Data"}</span></div>
+    <div className="hospital-profile-container">
+      <h1 className="hospital-profile-title">{hospital.username}</h1>
+      <div className="hospital-profile-details">
+        <div className="hospital-profile-item">
+          <strong>Location:</strong> <span>{hospital.location || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Description:</strong> <span>{hospital.description || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Tests Available:</strong> <span>{hospital.tests_available || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Specialties:</strong> <span>{hospital.specialties || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Facilities:</strong> <span>{hospital.facilities || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Email:</strong> <span>{hospital.email || "No Data"}</span>
+        </div>
+        <div className="hospital-profile-item">
+          <strong>Donation:</strong> <span>{hospital.donation || "No Data"}</span>
+        </div>
       </div>
 
-      <h2 className="update-title">Update Hospital Profile</h2>
-      <form className="hospital-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Location:</label>
+      <h2 className="hospital-profile-update-title">Update Hospital Profile</h2>
+      <form className="hospital-profile-form" onSubmit={handleSubmit}>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Location:</label>
           <input
-            className="input-field"
+            className="hospital-profile-input"
             type="text"
             name="location"
             value={formData.location}
             onChange={handleChange}
           />
         </div>
-        <div className="form-group">
-          <label>Description:</label>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Description:</label>
           <textarea
-            className="input-field"
+            className="hospital-profile-input"
             name="description"
             value={formData.description}
             onChange={handleChange}
           />
         </div>
-        <div className="form-group">
-          <label>Tests Available (comma separated):</label>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Tests Available (comma separated):</label>
           <input
-            className="input-field"
+            className="hospital-profile-input"
             type="text"
             name="tests_available"
             value={formData.tests_available}
             onChange={handleChange}
           />
         </div>
-        <div className="form-group">
-          <label>Specialties (comma separated):</label>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Specialties (comma separated):</label>
           <input
-            className="input-field"
+            className="hospital-profile-input"
             type="text"
             name="specialties"
             value={formData.specialties}
             onChange={handleChange}
           />
         </div>
-        <div className="form-group">
-          <label>Facilities (comma separated):</label>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Facilities (comma separated):</label>
           <input
-            className="input-field"
+            className="hospital-profile-input"
             type="text"
             name="facilities"
             value={formData.facilities}
             onChange={handleChange}
           />
         </div>
-        <button className="update-button" type="submit">Update</button>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Email:</label>
+          <input
+            className="hospital-profile-input"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="hospital-profile-form-group">
+          <label className="hospital-profile-label">Donation:</label>
+          <input
+            className="hospital-profile-input"
+            type="text"
+            name="donation"
+            value={formData.donation}
+            onChange={handleChange}
+          />
+        </div>
+        <button className="hospital-profile-submit-button" type="submit">Update</button>
+        {hospital.donation && (
+          <button
+            className="hospital-profile-donation-button"
+            type="button"
+            onClick={handleDonationDelete}
+          >
+            Donated
+          </button>
+        )}
       </form>
     </div>
   );

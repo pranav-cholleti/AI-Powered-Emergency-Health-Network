@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/Hospitals.css';
 
-const Hospitals = () => {
+const Hospitals = ({ username, role }) => {
   const [hospitals, setHospitals] = useState([]);
+  const [recommendedHospitals, setRecommendedHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchField, setSearchField] = useState('username'); // Default search field
+  const [searchQueryHospitals, setSearchQueryHospitals] = useState('');
+  const [searchFieldHospitals, setSearchFieldHospitals] = useState('username'); // Default search field for hospitals
+  const [searchQueryRecommended, setSearchQueryRecommended] = useState('');
+  const [searchFieldRecommended, setSearchFieldRecommended] = useState('username'); // Default search field for recommended hospitals
 
   useEffect(() => {
-    // Fetch hospitals data from backend API
+    // Fetch all hospitals
     axios
       .get('http://localhost:5000/api/hospitals')
       .then((response) => {
@@ -21,32 +24,61 @@ const Hospitals = () => {
         setError('Error fetching hospital data');
         setLoading(false);
       });
-  }, []);
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
+  
+    // Fetch recommended hospitals
+    axios
+      .get('http://localhost:5000/api/recommended-hospitals', {
+        params: { role, username }, // Pass role and username to backend to get filtered recommended hospitals
+      })
+      .then((response) => {
+        setRecommendedHospitals(response.data);
+      })
+      .catch((err) => {
+        console.error('Error fetching recommended hospitals:', err);
+      });
+  }, [role, username]);
+  
+  const handleSearchHospitals = (e) => {
+    setSearchQueryHospitals(e.target.value);
   };
 
-  const handleFieldChange = (e) => {
-    setSearchField(e.target.value);
+  const handleFieldChangeHospitals = (e) => {
+    setSearchFieldHospitals(e.target.value);
   };
 
-  // Function to normalize tests_available to an array
+  const handleSearchRecommended = (e) => {
+    setSearchQueryRecommended(e.target.value);
+  };
+
+  const handleFieldChangeRecommended = (e) => {
+    setSearchFieldRecommended(e.target.value);
+  };
+
   const normalizeTestsAvailable = (tests) => {
     if (typeof tests === 'string') {
-      return tests.split(', ').map(test => test.trim());
+      return tests.split(', ').map((test) => test.trim());
     }
     return Array.isArray(tests) ? tests : [];
   };
 
   const filteredHospitals = hospitals.filter((hospital) => {
-    const fieldValue = hospital[searchField] || '';
+    const fieldValue = hospital[searchFieldHospitals] || ''; // Get the value for the selected search field
     if (Array.isArray(fieldValue)) {
       return fieldValue.some((value) =>
-        value.toLowerCase().includes(searchQuery.toLowerCase())
+        value.toLowerCase().includes(searchQueryHospitals.toLowerCase())
       );
     }
-    return fieldValue.toLowerCase().includes(searchQuery.toLowerCase());
+    return fieldValue.toLowerCase().includes(searchQueryHospitals.toLowerCase());
+  });
+
+  const filteredRecommendedHospitals = recommendedHospitals.filter((hospital) => {
+    const fieldValue = hospital[searchFieldRecommended] || ''; // Get the value for the selected search field
+    if (Array.isArray(fieldValue)) {
+      return fieldValue.some((value) =>
+        value.toLowerCase().includes(searchQueryRecommended.toLowerCase())
+      );
+    }
+    return fieldValue.toLowerCase().includes(searchQueryRecommended.toLowerCase());
   });
 
   if (loading) {
@@ -59,18 +91,84 @@ const Hospitals = () => {
 
   return (
     <div className="hospitals-container">
+      <div>
       <h1 className="heading">Hospitals</h1>
+      </div>
+      {/* Search Bar for Recommended Hospitals */}
       <div className="search-container">
+        <h2>Recommended Hospitals</h2>
+        <br></br>
         <input
           type="text"
-          placeholder={`Search by ${searchField}`}
+          placeholder={`Search by ${searchFieldRecommended}`}
           className="search-input"
-          value={searchQuery}
-          onChange={handleSearch}
+          value={searchQueryRecommended}
+          onChange={handleSearchRecommended}
         />
         <select
-          value={searchField}
-          onChange={handleFieldChange}
+          value={searchFieldRecommended}
+          onChange={handleFieldChangeRecommended}
+          className="search-dropdown"
+        >
+          <option value="username">Username</option>
+          <option value="description">Description</option>
+          <option value="tests_available">Tests Available</option>
+          <option value="specialties">Specialties</option>
+          <option value="facilities">Facilities</option>
+        </select>
+      </div>
+      <div className="recommended-hospitals">
+        <div className="hospitals-list">
+          {filteredRecommendedHospitals.length > 0 ? (
+            filteredRecommendedHospitals.map((hospital) => (
+              <div className="hospital-card" key={hospital.username}>
+                <h3 className="hospital-name">{hospital.username}</h3>
+                <p className="hospital-location">
+                  Location: {hospital.location || 'Not Available'}
+                </p>
+                <button className="details-btn">Details</button>
+                <div className="hospital-details">
+                  <p className="hospital-description">
+                    <strong>Description:</strong> {hospital.description}
+                  </p>
+                  <p className="hospital-tests">
+                    <strong>Tests Available:</strong>{' '}
+                    {normalizeTestsAvailable(hospital.tests_available).join(', ') || 'Not Available'}
+                  </p>
+                  <p className="hospital-specialties">
+                    <strong>Specialties:</strong>{' '}
+                    {Array.isArray(hospital.specialties)
+                      ? hospital.specialties.join(', ')
+                      : hospital.specialties || 'Not Available'}
+                  </p>
+                  <p className="hospital-facilities">
+                    <strong>Facilities:</strong>{' '}
+                    {Array.isArray(hospital.facilities)
+                      ? hospital.facilities.join(', ')
+                      : hospital.facilities || 'Not Available'}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No hospitals found matching your search.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Search Bar for All Hospitals */}
+      <div className="search-container">
+        <h2>Hospitals List</h2>
+        <input
+          type="text"
+          placeholder={`Search by ${searchFieldHospitals}`}
+          className="search-input"
+          value={searchQueryHospitals}
+          onChange={handleSearchHospitals}
+        />
+        <select
+          value={searchFieldHospitals}
+          onChange={handleFieldChangeHospitals}
           className="search-dropdown"
         >
           <option value="username">Username</option>
@@ -96,8 +194,7 @@ const Hospitals = () => {
                 </p>
                 <p className="hospital-tests">
                   <strong>Tests Available:</strong>{' '}
-                  {normalizeTestsAvailable(hospital.tests_available).join(', ') ||
-                    'Not Available'}
+                  {normalizeTestsAvailable(hospital.tests_available).join(', ') || 'Not Available'}
                 </p>
                 <p className="hospital-specialties">
                   <strong>Specialties:</strong>{' '}

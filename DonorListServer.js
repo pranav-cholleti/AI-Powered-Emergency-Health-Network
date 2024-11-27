@@ -39,6 +39,7 @@ app.get('/api/donors', async (req, res) => {
       username: donor.username,
       donation: donor.donation || 'Not Available',
       email: donor.email || 'Not Available',
+      location: donor.location || 'Not Available', // Include location field
     }));
 
     res.json(donorData);
@@ -63,6 +64,31 @@ app.delete('/api/donors/:username', async (req, res) => {
     }
   } catch (error) {
     console.error('Error deleting donor:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
+// Add a new donor
+app.post('/api/donors', async (req, res) => {
+  try {
+    const { username, donation, email, location } = req.body;
+
+    if (!username || !email || !location) {
+      return res.status(400).json({ message: 'Username, email, and location are required' });
+    }
+
+    const donor = {
+      username,
+      donation: donation || 'Not Available',
+      email,
+      location,
+    };
+
+    await donorsCollection.insertOne(donor);
+
+    res.status(201).json({ message: 'Donor added successfully' });
+  } catch (error) {
+    console.error('Error adding donor:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });

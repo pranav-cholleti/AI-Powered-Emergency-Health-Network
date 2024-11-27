@@ -60,7 +60,7 @@ const App = () => {
               ) : (
                 <div>
                   <Nav username={username} role={role} onLogout={handleLogout} />
-                  <Hospitals />
+                  <Hospitals username={username} role={role}/>
                   <Footer />
                 </div>
               )
@@ -74,7 +74,7 @@ const App = () => {
               ) : (
                 <div>
                   <Nav username={username} role={role} onLogout={handleLogout} />
-                  <Donors />
+                  <Donors username={username} role={role}/>
                   <Footer />
                 </div>
               )
@@ -89,7 +89,7 @@ const App = () => {
                 <div>
                   <Nav username={username} role={role} onLogout={handleLogout} />
                   <div style={{ minHeight: '20vh' }}></div>
-                  <DonorForm />
+                  <DonorForm username={username} role={role}/>
                   <div style={{ minHeight: '20vh' }}></div>
                   <Footer />
                 </div>

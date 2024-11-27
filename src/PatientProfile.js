@@ -4,14 +4,18 @@ import './css/PatientProfile.css';
 
 const PatientProfile = ({ username }) => {
     const [formData, setFormData] = useState(null); // Start with null
+    const [donation, setDonation] = useState(''); // Separate donation state
     const [error, setError] = useState(null);
+    const [hasDonated, setHasDonated] = useState(false); // Track donation status
 
     useEffect(() => {
         const fetchPatientData = async () => {
             try {
                 const response = await axios.get(`http://localhost:5006/api/patient/${username}`);
-                const reportData = response.data?.report || {}; // Fetch only report part
+                const reportData = response.data?.report || {};
                 setFormData(reportData);
+                setDonation(response.data?.donation || ''); // Fetch donation separately
+                setHasDonated(response.data?.donation !== undefined); // Check donation status
             } catch (error) {
                 setError('Failed to fetch patient data');
             }
@@ -27,15 +31,31 @@ const PatientProfile = ({ username }) => {
         }));
     };
 
+    const handleDonationChange = (e) => {
+        setDonation(e.target.value);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.put(`http://localhost:5006/api/patient/${username}`, {
                 report: formData,
+                donation,
             });
             alert('Profile updated successfully!');
         } catch (error) {
             setError('Failed to update profile');
+        }
+    };
+
+    const handleRemoveDonation = async () => {
+        try {
+            await axios.delete(`http://localhost:5006/api/patient/${username}/donation`);
+            setHasDonated(false);
+            setDonation('');
+            alert('Donation status removed successfully!');
+        } catch (error) {
+            setError('Failed to update donation status');
         }
     };
 
@@ -109,8 +129,23 @@ const PatientProfile = ({ username }) => {
                     }
                 />
 
+                <label>Donation</label>
+                <input
+                    name="donation"
+                    value={donation}
+                    placeholder="Enter donation details"
+                    onChange={handleDonationChange}
+                />
+
                 <button type="submit">Update Profile</button>
             </form>
+
+            {/* Display donation button only if the user has donated */}
+            {donation && (
+                <button className="donation-button" onClick={handleRemoveDonation}>
+                    Donated
+                </button>
+            )}
         </div>
     );
 };

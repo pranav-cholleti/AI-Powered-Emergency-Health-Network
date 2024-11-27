@@ -43,7 +43,9 @@ const DonorList = () => {
   const filteredDonors = donors.filter((donor) =>
     searchType === 'username'
       ? donor.username.toLowerCase().includes(searchQuery.toLowerCase())
-      : donor.donation.toLowerCase().includes(searchQuery.toLowerCase())
+      : searchType === 'donation'
+      ? donor.donation.toLowerCase().includes(searchQuery.toLowerCase())
+      : donor.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -67,6 +69,7 @@ const DonorList = () => {
         >
           <option value="username">Username</option>
           <option value="donation">Donation</option>
+          <option value="location">Location</option>
         </select>
       </div>
       <div className="donors-list">
@@ -77,6 +80,9 @@ const DonorList = () => {
               <p className="donor-donation">Donation: {donor.donation}</p>
               <p className="donor-email">
                 <strong>Email:</strong> {donor.email}
+              </p>
+              <p className="donor-location">
+                <strong>Location:</strong> {donor.location}
               </p>
               <button
                 className="delete-button"

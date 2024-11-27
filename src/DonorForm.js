@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import './css/DonorForm.css'; // Make sure to import the CSS
+import './css/DonorForm.css'; // Ensure this CSS file exists
 
-const DonorForm = () => {
-  const [username, setUsername] = useState("");
+const DonorForm = ({ username, role }) => {
   const [donation, setDonation] = useState("");
-  const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const donorData = {
-      username,
-      donation,
-      email,
+      username,  // Use username from props
+      donation,  // Only donation field is being sent
+      role,
     };
 
     try {
@@ -23,9 +21,7 @@ const DonorForm = () => {
 
       if (response.data.success) {
         setMessage("Donor details submitted successfully!");
-        setUsername("");
         setDonation("");
-        setEmail("");
       } else {
         setMessage("Failed to submit donor details.");
       }
@@ -39,25 +35,12 @@ const DonorForm = () => {
     <div className="donor-form-container">
       <h2>Donor Form</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
+        <p><strong>Username:</strong> {username}</p> {/* Display username from props */}
         <input
           type="text"
           placeholder="Donation (e.g., Blood, Organ, etc.)"
           value={donation}
           onChange={(e) => setDonation(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <button type="submit">Submit</button>

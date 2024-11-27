@@ -7,8 +7,8 @@ const path = require('path');
 const app = express();
 const port = 5004;
 
-const url = 'mongodb://localhost:27017/';  // MongoDB connection string
-const dbName = 'MedReady';  // Database name
+const url = 'mongodb://localhost:27017/'; // MongoDB connection string
+const dbName = 'MedReady'; // Database name
 
 let db;
 let hospitalCollection;
@@ -38,6 +38,13 @@ app.get('/api/hospital/:username', async (req, res) => {
       return res.status(404).json({ message: 'Hospital not found' });
     }
 
+    // Log the donation status (if any)
+    if (hospital.donation && hospital.donation.trim() !== '') {
+      console.log(`Donation present for ${username}: ${hospital.donation}`);
+    } else {
+      console.log(`No donation present for ${username}`);
+    }
+
     res.json(hospital);
   } catch (error) {
     console.error('Error fetching hospital:', error);
@@ -45,47 +52,24 @@ app.get('/api/hospital/:username', async (req, res) => {
   }
 });
 
-// Fetch all hospitals data
-app.get('/api/hospitals', async (req, res) => {
-  try {
-    const hospitals = await hospitalCollection.find().toArray();
-
-    const hospitalData = hospitals.map(hospital => ({
-      username: hospital.username,
-      location: hospital.location || 'No Location',
-      description: hospital.description || 'No Description Available',
-      tests_available: hospital.tests_available || ['No tests available'],
-      specialties: Array.isArray(hospital.specialties) ? hospital.specialties : [hospital.specialties || 'No specialties available'],
-      facilities: Array.isArray(hospital.facilities) ? hospital.facilities : [hospital.facilities || 'No facilities available'],
-    }));
-
-    res.json(hospitalData);
-  } catch (error) {
-    console.error('Error fetching hospitals:', error);
-    return res.status(500).json({ message: 'Error fetching hospitals data' });
-  }
-});
-
-// Update hospital data
+// Update hospital profile
 app.put('/api/hospital/:username', async (req, res) => {
   try {
     const { username } = req.params;
-    const { location, description, tests_available, specialties, facilities } = req.body;
+    const updatedData = req.body;
 
-    // Validate the received data
-    if (!location || !description || !tests_available || !specialties || !facilities) {
-      return res.status(400).json({ message: 'All fields are required' });
+    // Only set the donation field if it is part of the update data
+    if (!updatedData.hasOwnProperty('donation')) {
+      // Get the current hospital data to preserve the donation field if not updated
+      const currentHospital = await hospitalCollection.findOne({ username });
+
+      if (currentHospital && currentHospital.donation) {
+        // Preserve the donation field if not included in the update
+        updatedData.donation = currentHospital.donation;
+      }
     }
 
-    const updatedData = {
-      location,
-      description,
-      tests_available,
-      specialties,
-      facilities
-    };
-
-    // Update the hospital data in the database
+    // Update hospital data in the database
     const result = await hospitalCollection.updateOne(
       { username },
       { $set: updatedData }
@@ -95,11 +79,33 @@ app.put('/api/hospital/:username', async (req, res) => {
       return res.status(404).json({ message: 'Hospital not found or no changes made' });
     }
 
-    const updatedHospital = await hospitalCollection.findOne({ username });
-    res.json(updatedHospital);
+    console.log(`Hospital profile updated for ${username}`);
+    res.json({ message: 'Hospital profile updated successfully' });
   } catch (error) {
-    console.error('Error updating hospital data:', error);
-    res.status(500).json({ message: 'Error updating hospital data' });
+    console.error('Error updating hospital profile:', error);
+    res.status(500).json({ message: 'Error updating hospital profile' });
+  }
+});
+
+// Delete donation field
+app.delete('/api/hospital/:username/donation', async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const result = await hospitalCollection.updateOne(
+      { username },
+      { $unset: { donation: "" } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'Hospital not found or no donation present' });
+    }
+
+    console.log(`Donation removed for ${username}`);
+    res.json({ message: 'Donation removed successfully' });
+  } catch (error) {
+    console.error('Error deleting donation:', error);
+    res.status(500).json({ message: 'Error deleting donation' });
   }
 });
 

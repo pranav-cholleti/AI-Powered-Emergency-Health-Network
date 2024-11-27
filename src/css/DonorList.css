@@ -108,3 +108,7 @@
     width: 100%;
   }
 }
+.donor-location {
+  margin: 5px 0;
+  color: #555;
+}
