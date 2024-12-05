@@ -13,7 +13,6 @@ const Hospitals = ({ username, role }) => {
   const [searchFieldRecommended, setSearchFieldRecommended] = useState('username'); // Default search field for recommended hospitals
 
   useEffect(() => {
-    // Fetch all hospitals
     axios
       .get('http://localhost:5000/api/hospitals')
       .then((response) => {
@@ -24,11 +23,10 @@ const Hospitals = ({ username, role }) => {
         setError('Error fetching hospital data');
         setLoading(false);
       });
-  
-    // Fetch recommended hospitals
+
     axios
       .get('http://localhost:5000/api/recommended-hospitals', {
-        params: { role, username }, // Pass role and username to backend to get filtered recommended hospitals
+        params: { role, username },
       })
       .then((response) => {
         setRecommendedHospitals(response.data);
@@ -37,7 +35,7 @@ const Hospitals = ({ username, role }) => {
         console.error('Error fetching recommended hospitals:', err);
       });
   }, [role, username]);
-  
+
   const handleSearchHospitals = (e) => {
     setSearchQueryHospitals(e.target.value);
   };
@@ -62,7 +60,7 @@ const Hospitals = ({ username, role }) => {
   };
 
   const filteredHospitals = hospitals.filter((hospital) => {
-    const fieldValue = hospital[searchFieldHospitals] || ''; // Get the value for the selected search field
+    const fieldValue = hospital[searchFieldHospitals] || '';
     if (Array.isArray(fieldValue)) {
       return fieldValue.some((value) =>
         value.toLowerCase().includes(searchQueryHospitals.toLowerCase())
@@ -72,7 +70,7 @@ const Hospitals = ({ username, role }) => {
   });
 
   const filteredRecommendedHospitals = recommendedHospitals.filter((hospital) => {
-    const fieldValue = hospital[searchFieldRecommended] || ''; // Get the value for the selected search field
+    const fieldValue = hospital[searchFieldRecommended] || '';
     if (Array.isArray(fieldValue)) {
       return fieldValue.some((value) =>
         value.toLowerCase().includes(searchQueryRecommended.toLowerCase())
@@ -91,31 +89,31 @@ const Hospitals = ({ username, role }) => {
 
   return (
     <div className="hospitals-container">
-      <div>
       <h1 className="heading">Hospitals</h1>
-      </div>
-      {/* Search Bar for Recommended Hospitals */}
-      <div className="search-container">
+
+      {/* Recommended Hospitals */}
+      <div className="search-container-wrapper">
         <h2>Recommended Hospitals</h2>
-        <br></br>
-        <input
-          type="text"
-          placeholder={`Search by ${searchFieldRecommended}`}
-          className="search-input"
-          value={searchQueryRecommended}
-          onChange={handleSearchRecommended}
-        />
-        <select
-          value={searchFieldRecommended}
-          onChange={handleFieldChangeRecommended}
-          className="search-dropdown"
-        >
-          <option value="username">Username</option>
-          <option value="description">Description</option>
-          <option value="tests_available">Tests Available</option>
-          <option value="specialties">Specialties</option>
-          <option value="facilities">Facilities</option>
-        </select>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder={`Search by ${searchFieldRecommended}`}
+            className="search-input"
+            value={searchQueryRecommended}
+            onChange={handleSearchRecommended}
+          />
+          <select
+            value={searchFieldRecommended}
+            onChange={handleFieldChangeRecommended}
+            className="search-dropdown"
+          >
+            <option value="username">Username</option>
+            <option value="description">Description</option>
+            <option value="tests_available">Tests Available</option>
+            <option value="specialties">Specialties</option>
+            <option value="facilities">Facilities</option>
+          </select>
+        </div>
       </div>
       <div className="recommended-hospitals">
         <div className="hospitals-list">
@@ -156,28 +154,30 @@ const Hospitals = ({ username, role }) => {
         </div>
       </div>
 
-      {/* Search Bar for All Hospitals */}
-      <div className="search-container">
+      {/* All Hospitals */}
+      <div className="search-container-wrapper">
         <h2>Hospitals List</h2>
-        <input
-          type="text"
-          placeholder={`Search by ${searchFieldHospitals}`}
-          className="search-input"
-          value={searchQueryHospitals}
-          onChange={handleSearchHospitals}
-        />
-        <select
-          value={searchFieldHospitals}
-          onChange={handleFieldChangeHospitals}
-          className="search-dropdown"
-        >
-          <option value="username">Username</option>
-          <option value="location">Location</option>
-          <option value="description">Description</option>
-          <option value="tests_available">Tests Available</option>
-          <option value="specialties">Specialties</option>
-          <option value="facilities">Facilities</option>
-        </select>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder={`Search by ${searchFieldHospitals}`}
+            className="search-input"
+            value={searchQueryHospitals}
+            onChange={handleSearchHospitals}
+          />
+          <select
+            value={searchFieldHospitals}
+            onChange={handleFieldChangeHospitals}
+            className="search-dropdown"
+          >
+            <option value="username">Username</option>
+            <option value="location">Location</option>
+            <option value="description">Description</option>
+            <option value="tests_available">Tests Available</option>
+            <option value="specialties">Specialties</option>
+            <option value="facilities">Facilities</option>
+          </select>
+        </div>
       </div>
       <div className="hospitals-list">
         {filteredHospitals.length > 0 ? (

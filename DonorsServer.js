@@ -37,7 +37,7 @@ MongoClient.connect(url)
 app.get('/api/donors', async (req, res) => {
   try {
     // Fetch data from Patients collection
-    const patients = await patientsCollection.find({ donation: { $exists: true } }).toArray();
+    const patients = await patientsCollection.find({ donation: { $exists: true, $ne: '' } }).toArray();
     const patientsData = patients.map(patient => ({
       username: patient.username,
       email: patient.report?.email || 'Not Available', // Default email if missing
@@ -46,7 +46,7 @@ app.get('/api/donors', async (req, res) => {
     }));
 
     // Fetch data from Hospitals collection
-    const hospitals = await hospitalsCollection.find({ donation: { $exists: true } }).toArray();
+    const hospitals = await hospitalsCollection.find({ donation: { $exists: true, $ne: '' } }).toArray();
     const hospitalsData = hospitals.map(hospital => ({
       username: hospital.username,
       email: hospital.email || 'Not Available', // Default email if missing
@@ -64,6 +64,7 @@ app.get('/api/donors', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching donors data' });
   }
 });
+
 
 // Fetch user location based on role and username
 app.get('/api/user-location', async (req, res) => {

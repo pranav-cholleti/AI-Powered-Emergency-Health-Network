@@ -11,17 +11,24 @@
   margin-bottom: 30px;
 }
 
+.search-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .search-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-top: 10px; /* Add spacing between heading and search bar */
 }
 
 .search-input {
   padding: 8px;
   font-size: 1rem;
-  width: 250px; /* Adjusted width */
+  width: 250px;
   margin-right: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -31,7 +38,7 @@
 .search-dropdown {
   padding: 8px;
   font-size: 1rem;
-  width: 150px; /* Adjusted width to make it smaller */
+  width: 150px;
   border: 1px solid #ddd;
   border-radius: 4px;
   max-width: 100%;

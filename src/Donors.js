@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/Donors.css';
-
 const Donors = ({ username, role }) => {
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +13,6 @@ const Donors = ({ username, role }) => {
   const [locationError, setLocationError] = useState('');
   const [locationSearchQuery, setLocationSearchQuery] = useState('');
   const [userBloodGroup, setUserBloodGroup] = useState('');
-
   useEffect(() => {
     axios
       .get('http://localhost:4500/api/donors')
@@ -26,7 +24,6 @@ const Donors = ({ username, role }) => {
         setError('Error fetching donor data');
         setLoading(false);
       });
-
     setLoadingLocation(true);
     axios
       .get(`http://localhost:4500/api/user-location`, {
@@ -40,9 +37,7 @@ const Donors = ({ username, role }) => {
         setLocationError('Location not found');
         setLoadingLocation(false);
       });
-
     if (role === 'patient') {
-      // Fetch user's blood group if role is patient
       axios
         .get('http://localhost:4500/api/user-blood-group', {
           params: { username },
@@ -55,7 +50,6 @@ const Donors = ({ username, role }) => {
         });
     }
   }, [username, role]);
-
   useEffect(() => {
     if (location) {
       const locationDonors = donors.filter((donor) =>
@@ -64,7 +58,6 @@ const Donors = ({ username, role }) => {
       setRecommendedLocationDonors(locationDonors);
     }
   }, [location, donors]);
-
   useEffect(() => {
     if (role === 'patient' && userBloodGroup) {
       const bloodGroupDonors = donors.filter((donor) =>
@@ -74,34 +67,27 @@ const Donors = ({ username, role }) => {
       setRecommendedBloodDonors(bloodGroupDonors);
     }
   }, [userBloodGroup, location, donors, role]);
-
   const handleSearch = (e) => setSearchQuery(e.target.value);
-
   const handleLocationSearch = (e) => setLocationSearchQuery(e.target.value);
-
   const filteredDonors = donors.filter((donor) =>
     donor.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     donor.donation.toLowerCase().includes(searchQuery.toLowerCase()) ||
     donor.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const filteredLocationDonors = recommendedLocationDonors.filter((donor) =>
     donor.username.toLowerCase().includes(locationSearchQuery.toLowerCase()) ||
-    donor.location.toLowerCase().includes(locationSearchQuery.toLowerCase())
+    donor.location.toLowerCase().includes(locationSearchQuery.toLowerCase()) ||
+    donor.donation.toLowerCase().includes(locationSearchQuery.toLowerCase()) 
   );
-
   if (loading || loadingLocation) {
     return <div className="loading">Loading...</div>;
   }
-
   if (error) {
     return <div className="error">{error}</div>;
   }
-
   return (
     <div className="donors-container">
       <h1 className="heading">Donors</h1>
-
       {role === 'patient' && (
         <>
           <h2>Recommended Donors Based on Blood Group and Location</h2>
@@ -127,7 +113,6 @@ const Donors = ({ username, role }) => {
           </div>
         </>
       )}
-
       <h2>Recommended Donors Based on Location</h2>
       <div className="search-container">
         <input
@@ -158,7 +143,6 @@ const Donors = ({ username, role }) => {
           <p>No location-based donors found.</p>
         )}
       </div>
-
       <h2>All Donors</h2>
       <div className="search-container">
         <input
@@ -192,5 +176,4 @@ const Donors = ({ username, role }) => {
     </div>
   );
 };
-
 export default Donors;
