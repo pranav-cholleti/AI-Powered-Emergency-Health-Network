@@ -21,10 +21,11 @@ A full-stack web application designed to centralize and streamline real-time man
 
 ## Technologies Used
 
-- JavaScript
-- CSS
-- HTML
+- React
+- Node.js
 - MongoDB
+- CSS
+- JavaScript
 
 ## Installation
 
