@@ -23,7 +23,7 @@
   "scripts": {
     "start":"node server.js",
     "server": "concurrently \"nodemon server.js\"",
-    "build": "npm i && npm run build",
+    "builddev": "npm i && npm run build",
     "dev": "concurrently \"npm run server\" \"npm start\""
 
   },

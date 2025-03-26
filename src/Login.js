@@ -22,7 +22,7 @@ const Login = ({ onLoginSuccess }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/login', {
+      const response = await fetch('http://localhost:3000/login/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
