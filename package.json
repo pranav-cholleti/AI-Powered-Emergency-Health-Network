@@ -21,9 +21,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "server": "concurrently \"nodemon HospitalsServer.js\" \"nodemon loginServer.js\" \"nodemon DonorFormServer.js\" \"nodemon DonorsServer.js\" \"nodemon ContactServer.js\" \"nodemon ContactListServer.js\"  \"nodemon HospitalProfileServer.js\" \"nodemon PatientProfileServer.js\" \"nodemon DonorListServer.js\" \"nodemon ChatServer.js\" ",
-    "dev": "concurrently \"npm run server\" \"npm start\""
+    "start":"node server.js",
+    "server": "concurrently \"nodemon server.js\"",
+    "build": "npm i && npm run build",
+    "dev": "concurrently \"npm run server\" \"npm start\"",
+
   },
   "eslintConfig": {
     "extends": [
