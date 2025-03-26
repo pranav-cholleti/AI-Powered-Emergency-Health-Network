@@ -1,36 +1,29 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const path = require('path');
+// patientProfileController.js
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
-const app = express();
-const port = 5006;
-
-const url = 'mongodb://localhost:27017/'; // MongoDB connection string
-const dbName = 'MedReady'; // Database name
+const url = process.env.MONGODB_URI;
+const dbName = process.env.DATABASE_NAME;
 
 let db;
 let patientsCollection;
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Connect to MongoDB
-MongoClient.connect(url, { useUnifiedTopology: true })
-  .then((client) => {
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(url);
     db = client.db(dbName);
     patientsCollection = db.collection('Patients');
     console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('MongoDB connection error:', error);
     process.exit(1);
-  });
+  }
+}
+
+connectToDatabase();
 
 // Get patient profile by username
-app.get('/api/patient/:username', async (req, res) => {
+exports.getPatient = async (req, res) => {
   try {
     const { username } = req.params;
     const patient = await patientsCollection.findOne({ username });
@@ -47,10 +40,10 @@ app.get('/api/patient/:username', async (req, res) => {
     console.error('Error fetching patient:', error);
     res.status(500).json({ message: 'Error fetching patient data' });
   }
-});
+};
 
 // Update patient profile
-app.put('/api/patient/:username', async (req, res) => {
+exports.updatePatient = async (req, res) => {
   try {
     const { username } = req.params;
     const { report, donation } = req.body;
@@ -90,10 +83,10 @@ app.put('/api/patient/:username', async (req, res) => {
     console.error('Error updating patient data:', error);
     res.status(500).json({ message: 'Error updating patient data' });
   }
-});
+};
 
 // Remove the donation status
-app.delete('/api/patient/:username/donation', async (req, res) => {
+exports.deleteDonation = async (req, res) => {
   try {
     const { username } = req.params;
 
@@ -111,12 +104,4 @@ app.delete('/api/patient/:username/donation', async (req, res) => {
     console.error('Error removing donation status:', error);
     res.status(500).json({ message: 'Error removing donation status' });
   }
-});
-
-// Serve static files if necessary
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Patient Server is running on http://localhost:${port}`);
-});
+};

@@ -11,7 +11,7 @@ const DonorList = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5010/api/donors')
+      .get('http://localhost:3000/donor-list/api/donors')
       .then((response) => {
         setDonors(response.data);
         setLoading(false);

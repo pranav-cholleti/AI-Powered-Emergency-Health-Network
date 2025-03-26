@@ -15,7 +15,7 @@ const Donors = ({ username, role }) => {
   const [userBloodGroup, setUserBloodGroup] = useState('');
   useEffect(() => {
     axios
-      .get('http://localhost:4500/api/donors')
+      .get('http://localhost:3000/donors/api/donors')
       .then((response) => {
         setDonors(response.data);
         setLoading(false);

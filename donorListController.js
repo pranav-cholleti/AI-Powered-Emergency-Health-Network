@@ -1,38 +1,29 @@
-const express = require('express');
+// donorListController.js
 const { MongoClient } = require('mongodb');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const path = require('path');
+require('dotenv').config();  // Load environment variables
 
-const app = express();
-const port = 5010; // Port for Donors
-
-const url = 'mongodb://localhost:27017/'; // MongoDB connection string
-const dbName = 'MedReady'; // Database name
+const url = process.env.MONGODB_URI;
+const dbName = process.env.DATABASE_NAME;
 
 let db;
-let donorsCollection; // For Donors collection
+let donorsCollection;
 
-// Enable CORS for all routes (important for cross-origin requests from React)
-app.use(cors());
-
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
-
-// Connect to MongoDB
-MongoClient.connect(url)
-  .then((client) => {
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(url);
     db = client.db(dbName);
-    donorsCollection = db.collection('Donors'); // Donors collection
+    donorsCollection = db.collection('Donors');
     console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1); // Exit the process if DB connection fails
-  });
+    process.exit(1);
+  }
+}
+
+connectToDatabase();
 
 // Fetch donors data
-app.get('/api/donors', async (req, res) => {
+exports.getDonors = async (req, res) => {
   try {
     const donors = await donorsCollection.find().toArray();
     const donorData = donors.map((donor) => ({
@@ -47,10 +38,10 @@ app.get('/api/donors', async (req, res) => {
     console.error('Error fetching donors:', error);
     return res.status(500).json({ message: 'Error fetching donors data' });
   }
-});
+};
 
 // Delete a donor by username
-app.delete('/api/donors/:username', async (req, res) => {
+exports.deleteDonor = async (req, res) => {
   try {
     const donorUsername = req.params.username;
     console.log(`Deleting donor with username: ${donorUsername}`);
@@ -66,10 +57,10 @@ app.delete('/api/donors/:username', async (req, res) => {
     console.error('Error deleting donor:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
-});
+};
 
 // Add a new donor
-app.post('/api/donors', async (req, res) => {
+exports.addDonor = async (req, res) => {
   try {
     const { username, donation, email, location } = req.body;
 
@@ -91,12 +82,4 @@ app.post('/api/donors', async (req, res) => {
     console.error('Error adding donor:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
-});
-
-// Route to serve static files (if needed)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Donor Server is running on http://localhost:${port}`);
-});
+};

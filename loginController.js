@@ -1,44 +1,34 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
+// loginController.js
+const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt');  // To hash passwords (optional, for production)
+require('dotenv').config();
 
-const app = express();
-const port = 4000;
-
-const url = 'mongodb://localhost:27017/';  // MongoDB connection string
-const dbName = 'MedReady';  // Database name
+const url = process.env.MONGODB_URI;
+const dbName = process.env.DATABASE_NAME;
 
 let db;
 let adminCollection;
 let hospitalCollection;
 let patientCollection;
 
-// Enable CORS for all routes
-app.use(cors());
-
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));  // Serve static files (e.g., login.html)
-
-// Connect to MongoDB
-MongoClient.connect(url)
-  .then(client => {
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(url);
     db = client.db(dbName);
     adminCollection = db.collection('Admin');
     hospitalCollection = db.collection('Hospitals');
     patientCollection = db.collection('Patients');
     console.log('Connected to MongoDB');
-  })
-  .catch(error => {
+  } catch (error) {
     console.error('MongoDB connection error:', error);
-    process.exit(1);  // Exit the process if DB connection fails
-  });
-  
+    process.exit(1);
+  }
+}
+
+connectToDatabase();
+
 // Admin login and patient/hospital login/signup
-app.post('/login', async (req, res) => {
+exports.handleLogin = async (req, res) => {
   const { username, password, role } = req.body;
   console.log('Received login request:', req.body);  // Log the request data
 
@@ -98,14 +88,4 @@ app.post('/login', async (req, res) => {
     console.error('Error during login:', error);  // Log the error
     return res.status(500).json({ success: false, message: 'An error occurred. Please try again later.' });
   }
-});
-
-// Route to serve the login page (index.html) if needed
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+};

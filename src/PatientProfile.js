@@ -11,7 +11,7 @@ const PatientProfile = ({ username }) => {
     useEffect(() => {
         const fetchPatientData = async () => {
             try {
-                const response = await axios.get(`http://localhost:5006/api/patient/${username}`);
+                const response = await axios.get(`http://localhost:3000/patient-profile/api/patient/${username}`);
                 const reportData = response.data?.report || {};
                 setFormData(reportData);
                 setDonation(response.data?.donation || ''); // Fetch donation separately

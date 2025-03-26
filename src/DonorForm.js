@@ -17,7 +17,7 @@ const DonorForm = ({ username, role }) => {
 
     try {
       // Sending donor details to the backend server
-      const response = await axios.post("http://localhost:5001/api/donors", donorData);
+      const response = await axios.post("http://localhost:3000/donor-form/api/donors", donorData);
 
       if (response.data.success) {
         setMessage("Donor details submitted successfully!");

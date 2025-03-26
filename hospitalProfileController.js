@@ -1,35 +1,29 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const path = require('path');
+// hospitalProfileController.js
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
-const app = express();
-const port = 5004;
-
-const url = 'mongodb://localhost:27017/'; // MongoDB connection string
-const dbName = 'MedReady'; // Database name
+const url = process.env.MONGODB_URI;
+const dbName = process.env.DATABASE_NAME;
 
 let db;
 let hospitalCollection;
 
-app.use(cors());
-app.use(bodyParser.json());
-
-// Connect to MongoDB
-MongoClient.connect(url)
-  .then(client => {
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(url);
     db = client.db(dbName);
     hospitalCollection = db.collection('Hospitals');
     console.log('Connected to MongoDB');
-  })
-  .catch(error => {
+  } catch (error) {
     console.error('MongoDB connection error:', error);
     process.exit(1);
-  });
+  }
+}
+
+connectToDatabase();
 
 // Fetch hospital data by username
-app.get('/api/hospital/:username', async (req, res) => {
+exports.getHospital = async (req, res) => {
   try {
     const { username } = req.params;
     const hospital = await hospitalCollection.findOne({ username });
@@ -50,10 +44,10 @@ app.get('/api/hospital/:username', async (req, res) => {
     console.error('Error fetching hospital:', error);
     res.status(500).json({ message: 'Error fetching hospital data' });
   }
-});
+};
 
 // Update hospital profile
-app.put('/api/hospital/:username', async (req, res) => {
+exports.updateHospital = async (req, res) => {
   try {
     const { username } = req.params;
     const updatedData = req.body;
@@ -85,10 +79,10 @@ app.put('/api/hospital/:username', async (req, res) => {
     console.error('Error updating hospital profile:', error);
     res.status(500).json({ message: 'Error updating hospital profile' });
   }
-});
+};
 
 // Delete donation field
-app.delete('/api/hospital/:username/donation', async (req, res) => {
+exports.deleteDonation = async (req, res) => {
   try {
     const { username } = req.params;
 
@@ -107,12 +101,4 @@ app.delete('/api/hospital/:username/donation', async (req, res) => {
     console.error('Error deleting donation:', error);
     res.status(500).json({ message: 'Error deleting donation' });
   }
-});
-
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Hospital Server is running on http://localhost:${port}`);
-});
+};

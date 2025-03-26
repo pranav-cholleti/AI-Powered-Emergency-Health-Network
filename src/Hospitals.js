@@ -14,7 +14,7 @@ const Hospitals = ({ username, role }) => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/api/hospitals')
+      .get('http://localhost:3000/hospitals/api/hospitals')
       .then((response) => {
         setHospitals(response.data);
         setLoading(false);

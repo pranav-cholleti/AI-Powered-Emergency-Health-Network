@@ -18,7 +18,7 @@ const HospitalProfile = ({ username }) => {
   useEffect(() => {
     const fetchHospitalData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5004/api/hospital/${username}`);
+        const response = await axios.get(`http://localhost:3000/hospital-profile/api/hospital/${username}`);
         setHospital(response.data);
         setFormData({
           location: response.data.location || '',

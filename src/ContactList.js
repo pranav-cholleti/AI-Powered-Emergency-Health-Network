@@ -10,7 +10,7 @@ const ContactList = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await fetch('http://localhost:5003/api/contacts');
+        const response = await fetch('http://localhost:3000/contact-list/api/contacts');
         if (!response.ok) {
           throw new Error('Failed to fetch contacts');
         }

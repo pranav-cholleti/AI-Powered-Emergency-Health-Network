@@ -14,7 +14,7 @@ const ContactForm = () => {
     console.log("Sending data to backend:", queryData); // Debugging
   
     try {
-      const response = await axios.post("http://localhost:5002/api/contact", queryData);
+      const response = await axios.post("http://localhost:3000/contact/api/contact", queryData);
   
       if (response.data.success) {
         setMessage("Query submitted successfully!");
