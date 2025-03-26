@@ -8,32 +8,48 @@ const Hospitals = ({ username, role }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQueryHospitals, setSearchQueryHospitals] = useState('');
-  const [searchFieldHospitals, setSearchFieldHospitals] = useState('username'); // Default search field for hospitals
+  const [searchFieldHospitals, setSearchFieldHospitals] = useState('username');
   const [searchQueryRecommended, setSearchQueryRecommended] = useState('');
-  const [searchFieldRecommended, setSearchFieldRecommended] = useState('username'); // Default search field for recommended hospitals
+  const [searchFieldRecommended, setSearchFieldRecommended] = useState('username');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/hospitals/api/hospitals')
-      .then((response) => {
-        setHospitals(response.data);
+    const fetchHospitals = async () => {
+      try {
+        const hospitalsResponse = await axios.get('http://localhost:3000/hospitals/api/hospitals');
+        console.log("All Hospitals API Response:", hospitalsResponse.data); // Check the API response
+
+        if (Array.isArray(hospitalsResponse.data)) {
+          setHospitals(hospitalsResponse.data);
+        } else {
+          console.error("All Hospitals API returned non-array data:", hospitalsResponse.data);
+          setError("Error: Invalid hospital data format (all hospitals)");
+        }
+
+        const recommendedResponse = await axios.get(
+          'http://localhost:3000/hospitals/api/recommended-hospitals',
+          {
+            params: { role, username },
+          }
+        );
+
+        console.log("Recommended Hospitals API Response:", recommendedResponse.data); // Check the API response
+
+        if (Array.isArray(recommendedResponse.data)) {
+          setRecommendedHospitals(recommendedResponse.data);
+        } else {
+          console.error("Recommended Hospitals API returned non-array data:", recommendedResponse.data);
+          setError("Error: Invalid hospital data format (recommended hospitals)");
+        }
+
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.error('Error fetching data:', err);
         setError('Error fetching hospital data');
         setLoading(false);
-      });
+      }
+    };
 
-    axios
-      .get('http://localhost:3000/hospitals/api/recommended-hospitals', {
-        params: { role, username },
-      })
-      .then((response) => {
-        setRecommendedHospitals(response.data);
-      })
-      .catch((err) => {
-        console.error('Error fetching recommended hospitals:', err);
-      });
+    fetchHospitals();
   }, [role, username]);
 
   const handleSearchHospitals = (e) => {

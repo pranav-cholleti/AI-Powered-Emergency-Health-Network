@@ -1,7 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const dotenv = require("dotenv");
+import express from "express";
+import cors from "cors";
+import path from "path";
+import dotenv from "dotenv";
+
 // Import route modules (not the entire files)
 const hospitalRoutes = require("./HospitalsRoutes"); // Import the routes
 const loginRoutes = require("./loginRoutes"); // assuming you have loginRoutes.js

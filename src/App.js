@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Login from './Login';
-import Nav from './Nav'; // Import Nav component
-import Home from './Home';
-import Hospitals from './Hospitals';
-import Donors from './Donors';
-import DonorForm from './DonorForm';
-import Contact from './Contact';
-import ContactList from './ContactList';
-import DonorList from './DonorList';
-import HospitalProfile from './HospitalProfile';
-import PatientProfile from './PatientProfile';
-import Footer from './Footer';
+import Login from './Login.js'; // Import Login component
+import Nav from './Nav.js'; // Import Nav component
+import Home from './Home.js';
+import Hospitals from './Hospitals.js';
+import Donors from './Donors.js';
+import DonorForm from './DonorForm.js';
+import Contact from './Contact.js';
+import ContactList from './ContactList.js';
+import DonorList from './DonorList.js';
+import HospitalProfile from './HospitalProfile.js';
+import PatientProfile from './PatientProfile.js';
+import Footer from './Footer.js';
 import "./css/Chat.css";
-import ChatClient from "./ChatClient"; // Updated import path
+import ChatClient from "./ChatClient.js"; // Updated import path
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -50,12 +50,12 @@ const App = () => {
       <div className="App">
         <Routes>
           <Route
-            path="/login"
+            path="/Login"
             element={<Login onLoginSuccess={handleLoginSuccess} />}
           />
 
           <Route
-            path="/hospitals"
+            path="/Hospitals"
             element={
               !username || username === 'guest' ? (
                 <Login onLoginSuccess={handleLoginSuccess} />
@@ -69,7 +69,7 @@ const App = () => {
             }
           />
           <Route
-            path="/donors"
+            path="/Donors"
             element={
               !username || username === 'guest' ? (
                 <Login onLoginSuccess={handleLoginSuccess} />
@@ -83,7 +83,7 @@ const App = () => {
             }
           />
           <Route
-            path="/donorform"
+            path="/Donorform"
             element={
               !username || username === 'guest' ? (
                 <Login onLoginSuccess={handleLoginSuccess} />
@@ -99,7 +99,7 @@ const App = () => {
             }
           />
           <Route
-            path="/contact"
+            path="/Contact"
             element={
               !username || username === 'guest' ? (
                 <Login onLoginSuccess={handleLoginSuccess} />
@@ -115,7 +115,7 @@ const App = () => {
             }
           />
           <Route
-            path="/contactlist"
+            path="/Contactlist"
             element={
               role !== 'admin' ? (
                 <Link to="/" />  
@@ -131,7 +131,7 @@ const App = () => {
             }
           />
           <Route
-            path="/donorlist"
+            path="/Donorlist"
             element={
               role !== 'admin' ? (
                 <Link to="/" />  
@@ -147,7 +147,7 @@ const App = () => {
             }
           />
           <Route
-            path="/patientprofile"
+            path="/Patientprofile"
             element={
              role==='patient' ? (
                   <div>
@@ -167,7 +167,7 @@ const App = () => {
             }
           />
           <Route
-            path="/hospitalprofile"
+            path="/Hospitalprofile"
             element={
              role==='hospital' ? (
                   <div>
@@ -201,7 +201,7 @@ const App = () => {
             }
           />
           <Route
-            path="/chat"
+            path="/Chat"
             element={
               <ChatClient username={username} role={role} onLogout={handleLogout} />
             }

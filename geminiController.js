@@ -1,8 +1,9 @@
 // geminiController.js
+const fetch = require('node-fetch'); // Add this line
 const { MongoClient } = require('mongodb');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();  // Load environment variables
-
+import fetch from 'node-fetch'; // Add this line
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
 const apiKey = process.env.GEMINI_API_KEY; // Access API key from environment variables

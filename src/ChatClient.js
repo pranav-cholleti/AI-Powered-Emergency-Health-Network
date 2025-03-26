@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Nav from "./Nav"; // Updated import path
-import Footer from "./Footer"; // Updated import path
+import Nav from "./Nav.js"; // Updated import path
+import Footer from "./Footer.js"; // Updated import path
 import "./css/Chat.css";
 
 const ChatClient = ({ username, role, onLogout }) => {
