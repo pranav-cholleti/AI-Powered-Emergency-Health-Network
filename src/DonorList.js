@@ -24,7 +24,7 @@ const DonorList = () => {
 
   const deleteDonor = async (username) => {
     try {
-      await axios.delete(`http://localhost:5010/api/donors/${username}`);
+      await axios.delete(`http://localhost:3000/donor-list/api/donors/${username}`);
       setDonors(donors.filter((donor) => donor.username !== username));
     } catch (error) {
       console.error('Error deleting donor:', error);

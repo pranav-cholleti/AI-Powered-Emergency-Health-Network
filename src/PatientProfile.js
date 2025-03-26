@@ -38,7 +38,7 @@ const PatientProfile = ({ username }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5006/api/patient/${username}`, {
+            await axios.put(`http://localhost:3000/patient-profile/api/patient/${username}`, {
                 report: formData,
                 donation,
             });
@@ -50,7 +50,7 @@ const PatientProfile = ({ username }) => {
 
     const handleRemoveDonation = async () => {
         try {
-            await axios.delete(`http://localhost:5006/api/patient/${username}/donation`);
+            await axios.delete(`http://localhost:3000/patient-profile/api/patient/${username}/donation`);
             setHasDonated(false);
             setDonation('');
             alert('Donation status removed successfully!');

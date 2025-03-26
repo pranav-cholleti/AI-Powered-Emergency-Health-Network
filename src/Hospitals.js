@@ -25,7 +25,7 @@ const Hospitals = ({ username, role }) => {
       });
 
     axios
-      .get('http://localhost:5000/api/recommended-hospitals', {
+      .get('http://localhost:3000/hospitals/api/recommended-hospitals', {
         params: { role, username },
       })
       .then((response) => {

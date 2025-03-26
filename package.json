@@ -24,7 +24,7 @@
     "start":"node server.js",
     "server": "concurrently \"nodemon server.js\"",
     "build": "npm i && npm run build",
-    "dev": "concurrently \"npm run server\" \"npm start\"",
+    "dev": "concurrently \"npm run server\" \"npm start\""
 
   },
   "eslintConfig": {

@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-import path from 'path';
-import dotenv from 'dotenv';
+const path = require("path");
+const dotenv = require("dotenv");
 // Import route modules (not the entire files)
 const hospitalRoutes = require("./HospitalsRoutes"); // Import the routes
 const loginRoutes = require("./loginRoutes"); // assuming you have loginRoutes.js
@@ -15,10 +15,10 @@ const donorListRoutes = require("./DonorListRoutes");
 const chatRoutes = require("./ChatRoutes");
 dotenv.config();
 const app = express();
-const __dirname = path.resolve();
+
 if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname,"/build")));
-    app.get('*',(req,res)=>res.sendFile(path.resolve(__dirname,'build','index.html')));
+    app.use(express.static(path.join(__dirname,"/client/build")));
+    app.get('*',(req,res)=>res.sendFile(path.resolve(__dirname,'client','build','index.html')));
 }
 
 // Enable CORS (Configure this properly for production!)
