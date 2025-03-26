@@ -48,6 +48,7 @@ const Nav = ({ username, role }) => {
                   )
                 )}
               </li>
+              <li><Link to="/chat" className="nav-navbar-link">Chat</Link></li>
             </ul>
           </nav>
           <div className="nav-user-info">

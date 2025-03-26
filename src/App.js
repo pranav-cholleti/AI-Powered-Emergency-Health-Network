@@ -12,6 +12,8 @@ import DonorList from './DonorList';
 import HospitalProfile from './HospitalProfile';
 import PatientProfile from './PatientProfile';
 import Footer from './Footer';
+import "./css/Chat.css";
+import ChatClient from "./ChatClient"; // Updated import path
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -196,6 +198,12 @@ const App = () => {
                   <Footer />
                 </div>
               )
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ChatClient username={username} role={role} onLogout={handleLogout} />
             }
           />
         </Routes>
