@@ -1,6 +1,7 @@
 // contactListController.js
-const { MongoClient } = require('mongodb');
-require('dotenv').config();  // Load environment variables
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();  // Load environment variables
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -24,7 +25,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Fetch contacts data
-exports.getContacts = async (req, res) => {
+export const getContacts = async (req, res) => {
   try {
     // Fetch all contacts from the 'contacts' collection
     const contacts = await contactsCollection.find().toArray();

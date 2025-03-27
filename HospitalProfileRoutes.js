@@ -1,10 +1,10 @@
 // hospitalProfileRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const hospitalProfileController = require('./hospitalProfileController');
+import * as hospitalProfileController from './hospitalProfileController.js';
 
 router.get('/api/hospital/:username', hospitalProfileController.getHospital);
 router.put('/api/hospital/:username', hospitalProfileController.updateHospital);
 router.delete('/api/hospital/:username/donation', hospitalProfileController.deleteDonation);
 
-module.exports = router;
+export default router;

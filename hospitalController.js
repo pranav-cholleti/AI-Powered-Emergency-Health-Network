@@ -1,5 +1,6 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -24,7 +25,7 @@ async function connectToDatabase() {
 // Call this function to connect to the database
 connectToDatabase();
 
-exports.getAllHospitals = async (req, res) => {
+export const getAllHospitals = async (req, res) => {
   try {
     const allHospitals = await hospitalCollection.find({}).toArray();
 
@@ -44,7 +45,7 @@ exports.getAllHospitals = async (req, res) => {
   }
 };
 
-exports.getRecommendedHospitals = async (req, res) => {
+export const getRecommendedHospitals = async (req, res) => {
   try {
     const { role, username } = req.query;
     let filter = {};

@@ -1,6 +1,7 @@
 // donorListController.js
-const { MongoClient } = require('mongodb');
-require('dotenv').config();  // Load environment variables
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();  // Load environment variables
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -23,7 +24,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Fetch donors data
-exports.getDonors = async (req, res) => {
+export const getDonors = async (req, res) => {
   try {
     const donors = await donorsCollection.find().toArray();
     const donorData = donors.map((donor) => ({
@@ -41,7 +42,7 @@ exports.getDonors = async (req, res) => {
 };
 
 // Delete a donor by username
-exports.deleteDonor = async (req, res) => {
+export const deleteDonor = async (req, res) => {
   try {
     const donorUsername = req.params.username;
     console.log(`Deleting donor with username: ${donorUsername}`);
@@ -60,7 +61,7 @@ exports.deleteDonor = async (req, res) => {
 };
 
 // Add a new donor
-exports.addDonor = async (req, res) => {
+export const addDonor = async (req, res) => {
   try {
     const { username, donation, email, location } = req.body;
 

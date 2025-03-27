@@ -1,8 +1,8 @@
 // donorFormRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const donorFormController = require('./donorFormController');
+import * as donorFormController from './donorFormController.js';
 
 router.post('/api/donors', donorFormController.submitDonorData);
 
-module.exports = router;
+export default router;

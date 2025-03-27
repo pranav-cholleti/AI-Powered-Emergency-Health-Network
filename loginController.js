@@ -1,7 +1,8 @@
 // loginController.js
-const { MongoClient } = require('mongodb');
-const bcrypt = require('bcrypt');  // To hash passwords (optional, for production)
-require('dotenv').config();
+import { MongoClient } from 'mongodb';
+import bcrypt from 'bcrypt';  // To hash passwords (optional, for production)
+import dotenv from 'dotenv';
+dotenv.config();
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -28,7 +29,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Admin login and patient/hospital login/signup
-exports.handleLogin = async (req, res) => {
+export const handleLogin = async (req, res) => {
   const { username, password, role } = req.body;
   console.log('Received login request:', req.body);  // Log the request data
 

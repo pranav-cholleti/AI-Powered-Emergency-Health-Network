@@ -1,6 +1,7 @@
 // patientProfileController.js
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -23,7 +24,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Get patient profile by username
-exports.getPatient = async (req, res) => {
+export const getPatient = async (req, res) => {
   try {
     const { username } = req.params;
     const patient = await patientsCollection.findOne({ username });
@@ -43,7 +44,7 @@ exports.getPatient = async (req, res) => {
 };
 
 // Update patient profile
-exports.updatePatient = async (req, res) => {
+export const updatePatient = async (req, res) => {
   try {
     const { username } = req.params;
     const { report, donation } = req.body;
@@ -86,7 +87,7 @@ exports.updatePatient = async (req, res) => {
 };
 
 // Remove the donation status
-exports.deleteDonation = async (req, res) => {
+export const deleteDonation = async (req, res) => {
   try {
     const { username } = req.params;
 

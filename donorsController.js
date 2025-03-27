@@ -1,6 +1,7 @@
 // donorsController.js
-const { MongoClient } = require('mongodb');
-require('dotenv').config();  // Load environment variables
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();  // Load environment variables
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -25,7 +26,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Fetch donors data from both Hospitals and Patients collections
-exports.getDonors = async (req, res) => {
+export const getDonors = async (req, res) => {
   try {
     // Fetch data from Patients collection
     const patients = await patientsCollection.find({ donation: { $exists: true, $ne: '' } }).toArray();
@@ -57,7 +58,7 @@ exports.getDonors = async (req, res) => {
 };
 
 // Fetch user location based on role and username
-exports.getUserLocation = async (req, res) => {
+export const getUserLocation = async (req, res) => {
   const { username, role } = req.query;
 
   if (!username || !role) {
@@ -85,7 +86,7 @@ exports.getUserLocation = async (req, res) => {
 };
 
 // Fetch user blood group (only for patient)
-exports.getUserBloodGroup = async (req, res) => {
+export const getUserBloodGroup = async (req, res) => {
   const { username } = req.query;
 
   if (!username) {

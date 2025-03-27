@@ -1,12 +1,12 @@
 // hospitalRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const hospitalController = require('./hospitalController');
+import * as hospitalController from './HospitalController.js';
 
 // Fetch all hospitals
-router.get('/all', hospitalController.getAllHospitals);
+router.get('/api/hospitals', hospitalController.getAllHospitals);
 
 // Fetch recommended hospitals
-router.get('/recommended', hospitalController.getRecommendedHospitals);
+router.get('/api/recommended-hospitals', hospitalController.getRecommendedHospitals);
 
-module.exports = router;
+export default router;

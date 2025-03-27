@@ -1,6 +1,7 @@
 // contactController.js
-const mongoose = require('mongoose');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // MongoDB connection URI from environment variables
 const mongoURI = process.env.MONGODB_URI;
@@ -38,7 +39,7 @@ async function connectToDatabase() {
 connectToDatabase(); // Initialize the database connection
 
 // POST route to handle contact form submission
-exports.submitContactForm = async (req, res) => {
+export const submitContactForm = async (req, res) => {
     const { username, description } = req.body;
 
     if (!username || !description) {

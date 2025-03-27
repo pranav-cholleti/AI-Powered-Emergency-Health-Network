@@ -1,10 +1,10 @@
 // donorListRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const donorListController = require('./donorListController');
+import * as donorListController from './donorListController.js';
 
 router.get('/api/donors', donorListController.getDonors);
 router.delete('/api/donors/:username', donorListController.deleteDonor);
 router.post('/api/donors', donorListController.addDonor);
 
-module.exports = router;
+export default router;

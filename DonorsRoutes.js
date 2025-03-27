@@ -1,10 +1,10 @@
 // donorsRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const donorsController = require('./donorsController');
+import * as donorsController from './donorsController.js';
 
 router.get('/api/donors', donorsController.getDonors);
 router.get('/api/user-location', donorsController.getUserLocation);
 router.get('/api/user-blood-group', donorsController.getUserBloodGroup);
 
-module.exports = router;
+export default router;

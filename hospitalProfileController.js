@@ -1,6 +1,7 @@
 // hospitalProfileController.js
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
@@ -23,7 +24,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Fetch hospital data by username
-exports.getHospital = async (req, res) => {
+export const getHospital = async (req, res) => {
   try {
     const { username } = req.params;
     const hospital = await hospitalCollection.findOne({ username });
@@ -47,7 +48,7 @@ exports.getHospital = async (req, res) => {
 };
 
 // Update hospital profile
-exports.updateHospital = async (req, res) => {
+export const updateHospital = async (req, res) => {
   try {
     const { username } = req.params;
     const updatedData = req.body;
@@ -82,7 +83,7 @@ exports.updateHospital = async (req, res) => {
 };
 
 // Delete donation field
-exports.deleteDonation = async (req, res) => {
+export const deleteDonation = async (req, res) => {
   try {
     const { username } = req.params;
 

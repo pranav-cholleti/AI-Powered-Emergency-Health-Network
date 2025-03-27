@@ -1,6 +1,7 @@
 // donorFormController.js
-const mongoose = require('mongoose');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // MongoDB connection string from environment variables
 const mongoURI = process.env.MONGODB_URI;
@@ -46,7 +47,7 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // POST endpoint for submitting donor data
-exports.submitDonorData = async (req, res) => {
+export const submitDonorData = async (req, res) => {
     const { username, donation, role } = req.body;
 
     try {

@@ -19,7 +19,7 @@ const Donors = ({ username, role }) => {
     const fetchDonorsData = async () => {
       try {
         // Fetch all donors
-        const donorsResponse = await axios.get('http://localhost:3000/donors/api/donors');
+        const donorsResponse = await axios.get('http://localhost:3000/donor-list/api/donors');
         console.log("All Donors API Response:", donorsResponse.data);
 
         if (Array.isArray(donorsResponse.data)) {
@@ -33,7 +33,7 @@ const Donors = ({ username, role }) => {
 
         // Fetch user location
         setLoadingLocation(true);
-        const locationResponse = await axios.get(`http://localhost:3000/donors/api/user-location`, {
+        const locationResponse = await axios.get(`http://localhost:3000/api/user-location`, {
           params: { username, role },
         });
         console.log("User Location API Response:", locationResponse.data);
@@ -43,7 +43,7 @@ const Donors = ({ username, role }) => {
 
         // Fetch user blood group (if patient)
         if (role === 'patient') {
-          const bloodGroupResponse = await axios.get('http://localhost:3000/donors/api/user-blood-group', {
+          const bloodGroupResponse = await axios.get('http://localhost:3000/api/user-blood-group', {
             params: { username },
           });
           console.log("User Blood Group API Response:", bloodGroupResponse.data);

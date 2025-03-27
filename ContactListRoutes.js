@@ -1,9 +1,9 @@
 // contactListRoutes.js
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const contactListController = require('./contactListController');
+import * as contactListController from './contactListController.js';
 
 // Fetch contacts data
 router.get('/api/contacts', contactListController.getContacts);
 
-module.exports = router;
+export default router;

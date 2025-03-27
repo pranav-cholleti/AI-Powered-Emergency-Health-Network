@@ -1,9 +1,11 @@
 // geminiController.js
-const fetch = require('node-fetch'); // Add this line
-const { MongoClient } = require('mongodb');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config();  // Load environment variables
 import fetch from 'node-fetch'; // Add this line
+
+import { MongoClient } from 'mongodb';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import dotenv from 'dotenv';
+dotenv.config();  // Load environment variables
+
 const url = process.env.MONGODB_URI;
 const dbName = process.env.DATABASE_NAME;
 const apiKey = process.env.GEMINI_API_KEY; // Access API key from environment variables
@@ -54,7 +56,7 @@ const generationConfig = {
     responseMimeType: "text/plain",
 };
 
-exports.handleChat = async (req, res) => {
+export const handleChat = async (req, res) => {
     const { message } = req.body;
 
     if (!message) {
